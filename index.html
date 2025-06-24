@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #8364e8;
+            --secondary: #4a3a82;
+            --dark: #121212;
+            --light: #f5f5f7;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--light);
+            color: var(--dark);
+        }
+
+        body.dark {
+            background-color: var(--dark);
+            color: var(--light);
+        }
+
+        .nav-link {
+            position: relative;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--primary);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, rgba(131,100,232,0.1) 0%, rgba(255,255,255,0) 100%);
+        }
+
+        .dark .hero {
+            background: linear-gradient(135deg, rgba(131,100,232,0.1) 0%, rgba(0,0,0,0) 100%);
+        }
+
+        .skill-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .project-card {
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .project-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .project-image {
+            transition: transform 0.5s ease;
+        }
+
+        .project-card:hover .project-image {
+            transform: scale(1.05);
+        }
+
+        .project-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 1.5rem;
+        }
+
+        .project-card:hover .project-overlay {
+            opacity: 1;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .floating {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .category-title {
+            position: relative;
+            display: inline-block;
+        }
+
+        .category-title::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 50%;
+            height: 3px;
+            background-color: var(--primary);
+            transition: width 0.3s ease;
+        }
+
+        .category-title:hover::after {
+            width: 100%;
+        }
+
+        .comic-bubble {
+            position: relative;
+            background: white;
+            border: 3px solid var(--primary);
+            border-radius: 20px;
+            padding: 15px;
+            margin: 20px 0;
+            max-width: 80%;
+        }
+
+        .comic-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 30px;
+            border-width: 15px 15px 0;
+            border-style: solid;
+            border-color: white transparent;
+        }
+
+        .comic-bubble::before {
+            content: '';
+            position: absolute;
+            bottom: -18px;
+            left: 28px;
+            border-width: 16px 16px 0;
+            border-style: solid;
+            border-color: var(--primary) transparent;
+        }
+    </style>
+</head>
+<body class="dark:bg-gray-900 dark:text-gray-100">
+    <!-- Navigation -->
+    <nav class="fixed w-full bg-white dark:bg-gray-900 shadow-sm z-10">
+        <div class="container mx-auto px-6 py-3">
+            <div class="flex justify-between items-center">
+                <div class="text-2xl font-bold text-purple-600">BEYOND LIMITS</div>
+                
+                <div class="hidden md:flex space-x-8">
+                    <a href="#home" class="nav-link text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400">Home</a>
+                    <a href="#about" class="nav-link text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400">About</a>
+                    <a href="#expertise" class="nav-link text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400">Expertise</a>
+                    <a href="#projects" class="nav-link text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400">Projects</a>
+                    <a href="#contact" class="nav-link text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400">Contact</a>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <button id="theme-toggle" class="p-2 rounded-full focus:outline-none">
+                        <i class="fas fa-moon dark:hidden"></i>
+                        <i class="fas fa-sun hidden dark:block"></i>
+                    </button>
+                    
+                    <button id="mobile-menu-button" class="md:hidden focus:outline-none">
+                        <i class="fas fa-bars text-gray-700 dark:text-gray-300"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div id="mobile-menu" class="hidden md:hidden mt-4 space-y-2">
+                <a href="#home" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">Home</a>
+                <a href="#about" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">About</a>
+                <a href="#expertise" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">Expertise</a>
+                <a href="#projects" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">Projects</a>
+                <a href="#contact" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero min-h-screen flex items-center pt-16">
+        <div class="container mx-auto px-6 flex flex-col md:flex-row items-center">
+            <div class="md:w-1/2 flex flex-col space-y-6">
+                <div class="comic-bubble dark:bg-gray-800 dark:border-purple-400">
+                    <h1 class="text-5xl font-bold leading-tight">
+                        Hi, I'm <span class="text-purple-600">AKASH S L</span>
+                    </h1>
+                    <h2 class="text-3xl text-gray-600 dark:text-gray-400">
+                        Developer & Creative Technologist
+                    </h2>
+                </div>
+                <p class="text-gray-600 dark:text-gray-400 max-w-lg">
+                    Bridging code and creativity to build innovative digital experiences with solid engineering and artistic flair.
+                </p>
+                <div class="flex space-x-4">
+                    <a href="#projects" class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg shadow-lg transform hover:scale-105 transition-transform duration-300">
+                        View My Work
+                    </a>
+                    <a href="#contact" class="border-2 border-purple-600 text-purple-600 hover:bg-purple-600 hover:text-white px-6 py-3 rounded-lg shadow-lg transform hover:scale-105 transition-transform duration-300">
+                        Contact Me
+                    </a>
+                </div>
+            </div>
+            
+            <div class="md:w-1/2 mt-10 md:mt-0 flex justify-center">
+                <div class="relative w-64 h-64 md:w-80 md:h-80">
+                    <div class="absolute inset-0 bg-purple-500 opacity-20 rounded-full filter blur-xl"></div>
+                    <img src="akash.jpg" alt="Profile" class="relative w-full h-full rounded-full object-cover border-4 border-purple-500 floating">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-20 bg-gray-50 dark:bg-gray-800">
+        <div class="container mx-auto px-6">
+            <h2 class="text-4xl font-bold text-center mb-12">
+                About <span class="text-purple-600">Me</span>
+            </h2>
+            
+            <div class="flex flex-col md:flex-row items-center">
+                <div class="md:w-1/3 mb-10 md:mb-0 flex justify-center">
+                    <img src="me.jpg" alt="About" class="rounded-lg shadow-xl w-64 h-64 object-cover">
+                </div>
+                
+                <div class="md:w-2/3 md:pl-10">
+                    <p class="text-lg text-gray-600 dark:text-gray-300 mb-6">
+                        I'm a multidisciplinary technologist blending software engineering with creative disciplines. My unique combination of technical expertise in programming languages from C to Python's AI ecosystems, combined with artistic skills in comic artistry and UI/UX design, allows me to create solutions that are both technically robust and aesthetically compelling.
+                    </p>
+                    <p class="text-lg text-gray-600 dark:text-gray-300 mb-6">
+                        My approach combines analytical problem-solving from my computer science background with creative thinking honed through years of content creation and visual storytelling. Whether architecting efficient algorithms or designing intuitive user interfaces, I bring both precision and imagination to every project.
+                    </p>
+                    <p class="text-lg text-gray-600 dark:text-gray-300 mb-8">
+                        When not coding or designing, I'm typically creating webcomics, experimenting in game design, or exploring the intersection of AI and creative tools.
+                    </p>
+                    
+                    <div class="flex flex-wrap gap-4">
+                        <div class="flex items-center">
+                            <i class="fas fa-map-marker-alt text-purple-500 mr-2"></i>
+                            <span class="text-gray-700 dark:text-gray-300">Trivandrum, India</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-envelope text-purple-500 mr-2"></i>
+                            <span class="text-gray-700 dark:text-gray-300">slakash8086@gmail.com</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-graduation-cap text-purple-500 mr-2"></i>
+                            <span class="text-gray-700 dark:text-gray-300">Currently pursuing Btech in CS with AIML</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Expertise Section -->
+    <section id="expertise" class="py-20">
+        <div class="container mx-auto px-6">
+            <h2 class="text-4xl font-bold text-center mb-12">
+                My <span class="text-purple-600">Expertise</span>
+            </h2>
+            
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Technical Skills -->
+                <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+                    <h3 class="category-title text-2xl font-semibold mb-6 pb-2">Technical Skills</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="font-medium text-lg">
+                                <i class="fas fa-laptop-code text-purple-500 mr-2"></i>
+                                Programming Languages
+                            </h4>
+                            <div class="flex flex-wrap gap-2 mt-2">
+                                <span class="bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 px-3 py-1 rounded-full text-sm">C/C++</span>
+                                <span class="bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 px-3 py-1 rounded-full text-sm">Python</span>
+                                <span class="bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 px-3 py-1 rounded-full text-sm">Java</span>
+                                <span class="bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 px-3 py-1 rounded-full text-sm">C#</span>
+                                <span class="bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 px-3 py-1 rounded-full text-sm">JavaScript</span>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-medium text-lg">
+                                <i class="fas fa-globe text-purple-500 mr-2"></i>
+                                Web Development
+                            </h4>
+                            <div class="flex flex-wrap gap-2 mt-2">
+                                <span class="bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 px-3 py-1 rounded-full text-sm">HTML/CSS</span>
+                                <span class="bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 px-3 py-1 rounded-full text-sm">React.js</span>
+                                <span class="bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 px-3 py-1 rounded-full text-sm">TailwindCSS</span>
+                                <span class="bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 px-3 py-1 rounded-full text-sm">Firebase</span>
+                                <span class="bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 px-3 py-1 rounded-full text-sm">REST APIs</span>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-medium text-lg">
+                                <i class="fas fa-gamepad text-purple-500 mr-2"></i>
+                                Game Development
+                            </h4>
+                            <div class="flex flex-wrap gap-2 mt-2">
+                                <span class="bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 px-3 py-1 rounded-full text-sm">Unity</span>
+                                <span class="bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 px-3 py-1 rounded-full text-sm">Game Design</span>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-medium text-lg">
+                                <i class="fas fa-brain text-purple-500 mr-2"></i>
+                                AI/ML
+                            </h4>
+                            <div class="flex flex-wrap gap-2 mt-2">
+                                <span class="bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 px-3 py-1 rounded-full text-sm">Machine Learning</span>
+                                <span class="bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 px-3 py-1 rounded-full text-sm">Natural Language Processing</span>
+                                <span class="bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 px-3 py-1 rounded-full text-sm">TensorFlow/PyTorch</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Creative Skills -->
+                <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+                    <h3 class="category-title text-2xl font-semibold mb-6 pb-2">Creative Skills</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="font-medium text-lg">
+                                <i class="fas fa-paint-brush text-purple-500 mr-2"></i>
+                                Design
+                            </h4>
+                            <div class="flex flex-wrap gap-2 mt-2">
+                                <span class="bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 px-3 py-1 rounded-full text-sm">UI/UX Design</span>
+                                <span class="bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 px-3 py-1 rounded-full text-sm">Content Creation</span>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="font-medium text-lg">
+                                <i class="fas fa-paint-brush text-purple-500 mr-2"></i>
+                                Art
+                            </h4>
+                            <div class="flex flex-wrap gap-2 mt-2">
+                                <span class="bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 px-3 py-1 rounded-full text-sm">Comic Artistry</span>
+                                <span class="bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 px-3 py-1 rounded-full text-sm">Story Writing</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>  
+            </div>  
+        </div>
+    </section>
+                    
+    <!-- Projects Section -->
+    <section id="projects" class="py-20 bg-gray-100 dark:bg-gray-900">
+        <div class="container mx-auto px-6">
+            <h2 class="text-4xl font-bold text-center mb-12">
+                My <span class="text-purple-600">Projects</span>
+            </h2>
+            <h3 class="category-title text-2xl font-semibold mb-6 pb-2">Technical Projects</h3>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                
+                <!-- Project Card Example -->
+                <div class="relative project-card rounded-lg overflow-hidden shadow-lg bg-white dark:bg-gray-800">
+                    <a href="https://www.linkedin.com/posts/akash-s-l-290085255_ecodrive-electricvehicles-sustainability-activity-7317049632319066112-udkm?utm_source=share&utm_medium=member_desktop&rcm=ACoAAD7WO0wByhunZHys-00Iv5by6Usu8xTUK5k" target="_blank">
+                    <img src="eco-drive.png" alt="Eco-Drive" class="project-image w-full h-48 object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 to-transparent dark:from-black/80 opacity-0 hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
+
+                        <h3 class="text-xl font-semibold text-white mb-2">Eco-Drive</h3>
+                        <p class="text-gray-300 text-sm">An Ev Routing App that uses Reinforcement Learning to suggest the best route for electric vehicles, considering factors like battery life and charging stations.</p>
+                    </div>
+                    </a>
+                </div>
+
+                <div class="relative project-card rounded-lg overflow-hidden shadow-lg bg-white dark:bg-gray-800">
+                    <a href="https://www.linkedin.com/posts/akash-s-l-290085255_foodie-meta-a-smarter-way-to-manage-activity-7317401500173979648-yoN6?utm_source=share&utm_medium=member_desktop&rcm=ACoAAD7WO0wByhunZHys-00Iv5by6Usu8xTUK5k" target="_blank">
+                    <img src="foodie-meta.png" alt="Foodie-Meta" class="project-image w-full h-48 object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 to-transparent dark:from-black/80 opacity-0 hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
+                        <h3 class="text-xl font-semibold text-white mb-2">Foodie-Meta</h3>
+                        <p class="text-gray-300 text-sm">A reminder app that helps users track their food intake and set reminders for meals. Built with HTML, CSS, and JavaScript.</p>
+                    </div>
+                    </a>
+                </div>
+
+                <div class="relative project-card rounded-lg overflow-hidden shadow-lg bg-white dark:bg-gray-800">
+                    <a href="https://strange086.github.io/Wikipedia_redesigned/" target="_blank">
+                    <img src="wikipedia.png" alt="Wikipedia Redesigned" class="project-image w-full h-48 object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 to-transparent dark:from-black/80 opacity-0 hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
+                        <h3 class="text-xl font-semibold text-white mb-2">Wikipedia Redesigned</h3>
+                        <p class="text-gray-300 text-sm">A modern, mobile-first redesign of Wikipedia’s homepage using clean HTML and CSS to improve UX and visual appeal.</p>
+                    </div>
+                    </a>
+                </div>
+
+                <div class="relative project-card rounded-lg overflow-hidden shadow-lg bg-white dark:bg-gray-800">
+                    <a href="https://strange086.github.io/tic-tac-toe/" target="_blank">
+                        <img src="tic-tac-toe.png" alt="Tic-Tac-Toe" class="project-image w-full h-48 object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/90 to-transparent dark:from-black/80 opacity-0 hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
+                            <h3 class="text-xl font-semibold text-white mb-2">Tic-Tac-Toe</h3>
+                            <p class="text-gray-300 text-sm">A classic Tic-Tac-Toe game implemented in vanilla JavaScript with win tracking and responsive gameplay.</p>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="relative project-card rounded-lg overflow-hidden shadow-lg bg-white dark:bg-gray-800">
+                    <a href="https://strange086.github.io/Todo_List/" target="_blank">
+                    <img src="to-do.png" alt="To-Do List" class="project-image w-full h-48 object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 to-transparent dark:from-black/80 opacity-0 hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
+                        <h3 class="text-xl font-semibold text-white mb-2">To-Do List</h3>
+                        <p class="text-gray-300 text-sm">A simple to-do list application built in React with persistent storage using the browser's localStorage API.</p>
+                    </div>
+                    </a>
+                </div>
+
+
+            </div>
+            <h3 class="category-title text-2xl font-semibold mb-6 pb-2">Creative Works</h3>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <a href="when gandhi logged in.pdf" target="_blank" class="block">
+                    <div class="relative project-card rounded-lg overflow-hidden shadow-lg bg-white dark:bg-gray-800 hover:shadow-xl transition-shadow duration-300">
+                        <img src="india.png" alt="When Gandhi Logged in" class="project-image w-full h-48 object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/90 to-transparent dark:from-black/80 opacity-0 hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
+                            <h3 class="text-xl font-semibold text-white mb-2">When Gandhi Logged in</h3>
+                            <p class="text-gray-300 text-sm">A poetic and thought-provoking manifesto for a call to break educational boundaries and inspire learning through purpose, creativity, and student-driven exploration.</p>
+                            <div class="mt-2 inline-block bg-black bg-opacity-70 text-white px-3 py-1 rounded-lg text-xs border border-white">
+                                View Work
+                            </div>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="Born Offside. Built for Purpose.pdf" target="_blank" class="block">
+                    <div class="relative project-card rounded-lg overflow-hidden shadow-lg bg-white dark:bg-gray-800 hover:shadow-xl transition-shadow duration-300">
+                        <img src="inzagi.png" alt="Born Offside. Built for Purpose" class="project-image w-full h-48 object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/90 to-transparent dark:from-black/80 opacity-0 hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
+                            <h3 class="text-xl font-semibold text-white mb-2">Born Offside. Built for Purpose</h3>
+                            <p class="text-gray-300 text-sm">You don’t have to fit in to lead. You just have to stand for something.</p>
+                            <div class="mt-2 inline-block bg-black bg-opacity-70 text-white px-3 py-1 rounded-lg text-xs border border-white">
+                                View Work
+                            </div>
+                        </div>
+                    </div>
+                </a>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 bg-white dark:bg-gray-800">
+        <div class="container mx-auto px-6">
+            <h2 class="text-4xl font-bold text-center mb-12">
+                <span class="text-purple-600">Contact</span> Info
+            </h2>
+
+            <div class="max-w-2xl mx-auto space-y-6 text-center text-lg text-gray-700 dark:text-gray-300">
+                <div class="flex items-center justify-center space-x-3">
+                    <i class="fas fa-map-marker-alt text-purple-500"></i>
+                    <span>Trivandrum, India</span>
+                </div>
+                <div class="flex items-center justify-center space-x-3">
+                    <i class="fas fa-envelope text-purple-500"></i>
+                    <span>slakash8086@gmail.com</span>
+                </div>
+                <div class="flex items-center justify-center space-x-3">
+                    <i class="fas fa-phone text-purple-500"></i>
+                    <span>8086425290</span>
+                </div>
+                <div class="flex items-center justify-center space-x-3">
+                    <i class="fas fa-graduation-cap text-purple-500"></i>
+                    <span>Currently pursuing B.Tech in Computer Science with AIML</span>
+                </div>
+
+                <!-- Social Icons -->
+                <div class="flex justify-center space-x-6 pt-4">
+                    <a href="https://www.linkedin.com/in/akash-s-l-290085255?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" 
+                    target="_blank" class="text-purple-600 hover:text-purple-800 text-2xl">
+                        <i class="fab fa-linkedin"></i>
+                    </a>
+                    <a href="https://github.com/strange086" target="_blank" class="text-purple-600 hover:text-purple-800 text-2xl">
+                        <i class="fab fa-github"></i>
+                    </a>
+                </div>
+
+                <!-- Resume Download Button -->
+                <div class="pt-6">
+                    <a href="Resume.pdf" target="_blank" class="inline-block bg-purple-600 hover:bg-purple-700 text-white font-semibold px-6 py-3 rounded-lg shadow-md transition-transform transform hover:scale-105">
+                        <i class="fas fa-file-download mr-2"></i>View My Resume
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+<script>
+      const themeToggle = document.getElementById('theme-toggle');
+      const body = document.body;
+
+      // Apply saved theme on load
+      if (localStorage.getItem('theme') === 'dark') {
+        body.classList.add('dark');
+      } else {
+        body.classList.remove('dark');
+      }
+
+      // Toggle theme on button click
+      themeToggle.addEventListener('click', () => {
+        body.classList.toggle('dark');
+
+        if (body.classList.contains('dark')) {
+          localStorage.setItem('theme', 'dark');
+        } else {
+          localStorage.setItem('theme', 'light');
+        }
+      });
+</script>
+</body>
+</html>
